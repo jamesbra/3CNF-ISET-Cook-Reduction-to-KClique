@@ -43,16 +43,8 @@ public class solveISet
 					if (m != null) {
 						System.out.println();
 						graphNumber++;
-//						for (int[] i : m) {
-//							for (int j : i) {
-//								System.out.print(j + " ");
-//							}
-//							System.out.println();
-//						}
-						//solveClique(int size, int[][] m, int[] degree);
 						sc = new solveClique(prevSize, m, degree);
 						sc.search();
-						sc.display(m);
 
 						System.out.printf("\nG%d ( %d, %d ) {", graphNumber, prevSize, edgeCount / 2);
 						int vCount = 0;
@@ -85,11 +77,9 @@ public class solveISet
 						} else {
 							switch (values[i]) {
 							case 1:
-								//System.out.println("Case 1: "  + values[i]);
 								m[count][i] = 0;
 								break;
 							case 0:
-								//System.out.println("Case 0: " + values[i]);
 								m[count][i] = 1;
 								break;
 							}

@@ -18,6 +18,8 @@ public class solve3CNF {
 		} catch (Exception e) {
 
 		}
+		System.out.printf("* Max Cliques in graphs in %s\n" + "   (|V|,|E|) Cliques (size, ms used) *", args[0]);
+		System.out.println();
 		while (inputStream.hasNextLine()) {
 			HashMap<Integer, int[]> clauseIndexGroups = new HashMap<Integer, int[]>();
 
@@ -30,13 +32,13 @@ public class solve3CNF {
 			if (numVar == 0) {
 				break;
 			}
-			int sise = tokens.length;
+			int size = tokens.length;
 
 
-			int[][] m = new int[sise][sise];
-			int[] degree = new int[sise];
+			int[][] m = new int[size][size];
+			int[] degree = new int[size];
 
-			for (int i = 1; i < sise; i++) {
+			for (int i = 1; i < size; i++) {
 
 				int token = Integer.parseInt(tokens[i]);
 				// Add to top column
@@ -103,26 +105,26 @@ public class solve3CNF {
 			sc = new solveClique(numVar, newM, degree);
 			sc.search();
 
-
-			System.out.printf("\nG%d ( %d, %d ) {", graphNumber, sise, edgeCount / 2);
+			//System.out.print("3CNF No." + graphNumber+":[n="+numVar+" k="+(size/3)+"]");
+			System.out.printf("\nG%d ( %d, %d ) {", graphNumber, size, edgeCount / 2);
 			int vCount = 0;
-			for (int i = 0; i < sise; i++) {
+			for (int i = 0; i < size; i++) {
 				if (sc.solution[i] == 1) {
 					vCount++;
 					System.out.print(" " + i);
-					if (i != sise - 1 && vCount != sc.maxSize) {
+					if (i != size - 1 && vCount != sc.maxSize) {
 						System.out.print(",");
 					}
 
 				}
-				if (i == sise - 1 || vCount == sc.maxSize) {
+				if (i == size - 1 || vCount == sc.maxSize) {
 					System.out.print(" } ");
 					break;
 				}
 			}
 			System.out.printf("( size=%d, %d ms)", sc.maxSize, System.currentTimeMillis() - sc.cpuTime);
-			System.out.println();
-			sc.display(newM);
+			//System.out.println();
+			//sc.display(newM);
 			
 		}
 
