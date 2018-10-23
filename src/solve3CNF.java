@@ -70,7 +70,8 @@ public class solve3CNF {
 							break;
 						}
 					}
-					if (Math.abs(m[0][j]) == Math.abs(m[i][0]) && !existInGroup) {
+//					if (Math.abs(m[0][j]) == Math.abs(m[i][0]) && !existInGroup) {
+						if ((m[i][0]) == Math.negateExact(m[0][j]) && !existInGroup) {
 						m[i][j] = 0;
 						continue;
 					}
@@ -83,7 +84,16 @@ public class solve3CNF {
 					existInGroup = false;
 				}
 			}
-
+//
+//			System.out.println();
+//			for (int[] i: m) {
+//				for (int j:i) {
+//					System.out.print(j+"\t");
+//				}
+//				System.out.println();
+//			}
+//			
+			
 
 			int[][] newM = new int[m.length - 1][m.length - 1];
 			int copyR = 0;
@@ -123,8 +133,14 @@ public class solve3CNF {
 				}
 			}
 			System.out.printf("( size=%d, %d ms)", sc.maxSize, System.currentTimeMillis() - sc.cpuTime);
-			//System.out.println();
-			//sc.display(newM);
+//			System.out.println();
+//			for (int[] i: newM) {
+//				for (int j:i) {
+//					System.out.print(j+" ");
+//				}
+//				System.out.println();
+//			}
+//			sc.display(newM);
 			
 		}
 
