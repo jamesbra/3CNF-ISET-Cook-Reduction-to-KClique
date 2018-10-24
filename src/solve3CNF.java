@@ -1,8 +1,5 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 public class solve3CNF {
@@ -11,14 +8,13 @@ public class solve3CNF {
 		Scanner inputStream = null;
 		String fileName = args[0];
 		int graphNumber = 0;
-		int edgeCount = 0;
 		solveClique sc = null;
 		try {
 			inputStream = new Scanner(new File(fileName));
 		} catch (Exception e) {
 
 		}
-		System.out.printf("* Max Cliques in graphs in %s\n" + "   (|V|,|E|) Cliques (size, ms used) *", args[0]);
+		System.out.printf("* Solve 3CNF in %s\n" + "   (reduced to K-Clique) *", args[0]);
 		System.out.println();
 		while (inputStream.hasNextLine()) {
 			HashMap<Integer, int[]> clauseIndexGroups = new HashMap<Integer, int[]>();
@@ -34,7 +30,6 @@ public class solve3CNF {
 			}
 			int size = tokens.length;
 
-
 			int[][] m = new int[size][size];
 			int[] degree = new int[size];
 
@@ -47,7 +42,7 @@ public class solve3CNF {
 				// Add to row
 				m[i][0] = token;
 			}
-			//Build clause groups - should not connect nodes that are in the same group
+			// Build clause groups - should not connect nodes that are in the same group
 			for (int i = 1; i < m.length - 1; i += 3) {
 				int[] tempArray = { i, i + 1, i + 2 };
 				clauseIndexGroups.put(i, tempArray);
@@ -63,6 +58,7 @@ public class solve3CNF {
 				// COLUMN
 				for (int j = 1; j < m.length; j++) {
 					int[] clauseGroup = clauseIndexGroups.get(i);
+					//Check if current row is trying to make a connection to another node in its clause
 					for (int k : clauseGroup) {
 						if (j == k) {
 							existInGroup = true;
@@ -70,30 +66,20 @@ public class solve3CNF {
 							break;
 						}
 					}
-//					if (Math.abs(m[0][j]) == Math.abs(m[i][0]) && !existInGroup) {
-						if ((m[i][0]) == Math.negateExact(m[0][j]) && !existInGroup) {
+					//Check to see if this value is the compliment
+					if ((m[i][0]) == Math.negateExact(m[0][j]) && !existInGroup) {
 						m[i][j] = 0;
 						continue;
 					}
+					//Draw a connection
 					if (!existInGroup) {
 						m[i][j] = 1;
 						degree[i]++;
-						edgeCount++;
 						continue;
 					}
 					existInGroup = false;
 				}
 			}
-//
-//			System.out.println();
-//			for (int[] i: m) {
-//				for (int j:i) {
-//					System.out.print(j+"\t");
-//				}
-//				System.out.println();
-//			}
-//			
-			
 
 			int[][] newM = new int[m.length - 1][m.length - 1];
 			int copyR = 0;
@@ -112,36 +98,44 @@ public class solve3CNF {
 			graphNumber++;
 
 			// SOLVE CLIQUE
-			sc = new solveClique(numVar, newM, degree);
+			sc = new solveClique(newM.length, newM, degree);
 			sc.search();
 
-			//System.out.print("3CNF No." + graphNumber+":[n="+numVar+" k="+(size/3)+"]");
-			System.out.printf("\nG%d ( %d, %d ) {", graphNumber, size, edgeCount / 2);
-			int vCount = 0;
-			for (int i = 0; i < size; i++) {
-				if (sc.solution[i] == 1) {
-					vCount++;
-					System.out.print(" " + i);
-					if (i != size - 1 && vCount != sc.maxSize) {
-						System.out.print(",");
+			// K clique number we are looking for
+			int k = (newM.length)/3;
+			//If solution is big enough to satisfy 3CNF - print solution
+			if (sc.maxSize >= k) {
+				boolean[] solutionAssignment = new boolean[numVar+1];
+				System.out.print("3CNF No." + graphNumber + ":[n=" + numVar + " k=" + k + "] Assignments: [ ");
+				//Need to copy solution to an array to display assignments
+				for (int i = 0; i < sc.solution.length;i++) {
+					if (sc.solution[i] == 1) {
+						if (m[i+1][0] > 0) {
+							solutionAssignment[m[i+1][0]] = true;
+						}
+						else {
+							solutionAssignment[Math.abs(m[i+1][0])] = false;
+						}
 					}
+					
+				}
+				//Print assignments
+				for (int v = 1; v <solutionAssignment.length;v++) {
+					char output =  solutionAssignment[v] ? 'T' : 'F';
+					System.out.print(" " + "A" + v + "=" + output);
+				}
+				System.out.print(" ]" + " (" +(System.currentTimeMillis() - sc.cpuTime)
+						+ " ms)");
+				System.out.println();
 
-				}
-				if (i == size - 1 || vCount == sc.maxSize) {
-					System.out.print(" } ");
-					break;
-				}
+			//Print no solution
+			} else {
+				System.out.print("3CNF No." + graphNumber + ":[n=" + numVar + " k=" + (k) + "] No "
+						+ k + "-clique; no solution (" + (System.currentTimeMillis() - sc.cpuTime)
+						+ " ms)");
+				System.out.println();
 			}
-			System.out.printf("( size=%d, %d ms)", sc.maxSize, System.currentTimeMillis() - sc.cpuTime);
-//			System.out.println();
-//			for (int[] i: newM) {
-//				for (int j:i) {
-//					System.out.print(j+" ");
-//				}
-//				System.out.println();
-//			}
-//			sc.display(newM);
-			
+
 		}
 
 	}

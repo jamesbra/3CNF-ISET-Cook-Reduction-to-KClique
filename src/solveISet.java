@@ -11,11 +11,6 @@ public class solveISet
 {
 	public static void main(String[] args)
 	{
-
-		Scanner inputStream = null;
-		String fileName = args[0];
-		ArrayList<Graph> graphList = new ArrayList<Graph>();
-		ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>();
 		File inFile = null;
 		BufferedReader br = null;
 		String currentRow; // row string read from file
@@ -23,6 +18,7 @@ public class solveISet
 		int prevSize = 0; // Store previous size
 		int count = 0; // count for current row number of matrix
 		int edgeCount = 0;
+		int t = 0;
 		int graphNumber = 0; // store current graph number from file
 		int[][] m = null; // 0/1 adjacency matrix
 		int[] values = null; // temporary row values
@@ -35,13 +31,14 @@ public class solveISet
 
 			System.out.printf("* Max Cliques in graphs in %s\n" + "   (|V|,|E|) Cliques (size, ms used) *", args[0]);
 			while ((currentRow = br.readLine()) != null) {
+				if (t==3) {
+					break;
+				}
 				prevSize = size; // hold size
 				if (size == count) {
+					
 					size = Integer.parseInt(currentRow);
-					// System.out.println(currentRow);
-					// System.out.println();
 					if (m != null) {
-						System.out.println();
 						graphNumber++;
 						sc = new solveClique(prevSize, m, degree);
 						sc.search();
@@ -63,6 +60,7 @@ public class solveISet
 							}
 						}
 						System.out.printf("( size=%d, %d ms)", sc.maxSize, System.currentTimeMillis() - sc.cpuTime);
+						
 					}
 					m = new int[size][size];
 					degree = new int[size];
