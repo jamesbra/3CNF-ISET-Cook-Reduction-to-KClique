@@ -2,10 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class solveISet
 {
@@ -29,11 +26,8 @@ public class solveISet
 			// Create new FileReader to read input File
 			br = new BufferedReader(new FileReader(inFile));
 
-			System.out.printf("* Max Cliques in graphs in %s\n" + "   (|V|,|E|) Cliques (size, ms used) *", args[0]);
+			System.out.printf("* Max Independent Sets in graphs in " + args[0]+ ": (reduced to K-Clique) \n"+ "   (|V|,|E|) Independent Set (size, ms used) *");
 			while ((currentRow = br.readLine()) != null) {
-				if (t==3) {
-					break;
-				}
 				prevSize = size; // hold size
 				if (size == count) {
 					
@@ -43,7 +37,7 @@ public class solveISet
 						sc = new solveClique(prevSize, m, degree);
 						sc.search();
 
-						System.out.printf("\nG%d ( %d, %d ) {", graphNumber, prevSize, edgeCount / 2);
+						System.out.printf("\nG%d ( %d, %d ) {", graphNumber, prevSize, edgeCount/2);
 						int vCount = 0;
 						for (int i = 0; i < prevSize; i++) {
 							if (sc.solution[i] == 1) {
@@ -60,7 +54,6 @@ public class solveISet
 							}
 						}
 						System.out.printf("( size=%d, %d ms)", sc.maxSize, System.currentTimeMillis() - sc.cpuTime);
-						
 					}
 					m = new int[size][size];
 					degree = new int[size];
@@ -76,6 +69,7 @@ public class solveISet
 							switch (values[i]) {
 							case 1:
 								m[count][i] = 0;
+								edgeCount++;
 								break;
 							case 0:
 								m[count][i] = 1;
@@ -83,7 +77,6 @@ public class solveISet
 							}
 							if (m[count][i] == 1) {
 								degree[i]++;
-								edgeCount++;
 							}
 						}
 					}
